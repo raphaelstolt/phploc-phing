@@ -2,7 +2,10 @@
 <project name="example" default="phploc" basedir=".">
     <taskdef name="phploc" classname="phing.tasks.my.PHPLocTask" />
     <target name="phploc">
-      <phploc reportType="txt" reportName="phploc-report" 
+      <tstamp>
+        <format property="check.date.time" pattern="%Y%m%d-%H%M%S" locale="en_US"/>
+      </tstamp>
+      <phploc reportType="txt" reportName="${check.date.time}-report" 
               reportDirectory="phploc-reports">
         <fileset dir=".">
           <include name="**/*.php" />
