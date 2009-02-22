@@ -1,0 +1,13 @@
+﻿<?xml version="1.0"?>
+<project name="example" default="phploc" basedir=".">
+    <taskdef name="phploc" classname="phing.tasks.my.PHPLocTask" />
+    <target name="phploc">
+      <phploc reportType="txt" reportName="phploc-report" 
+              reportDirectory="phploc-reports">
+        <fileset dir=".">
+          <include name="**/*.php" />
+          <include name="*.php" />
+        </fileset>
+      </phploc>
+    </target>
+</project>
