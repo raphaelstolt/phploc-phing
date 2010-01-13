@@ -3,7 +3,7 @@ require_once 'phing/Task.php';
 require_once 'phing/BuildException.php';
 require_once 'PHPLOC/Analyser.php';
 require_once 'PHPLOC/TextUI/ResultPrinter/Text.php';
-require_once 'PHPLOC/TextUI/ResultPrinter/Xml.php';
+require_once 'PHPLOC/TextUI/ResultPrinter/XML.php';
 
 class PHPLocTask extends Task
 {
@@ -135,19 +135,17 @@ class PHPLocTask extends Task
         if ($this->reportType === 'cli' || $this->reportType === 'txt') {
             $printer = new PHPLOC_TextUI_ResultPrinter_Text();
             if ($this->reportType === 'txt') {
-                ob_start();
-                $printer->printResult($result);
+                $result = $printer->printResult($result, $this->countTests);
                 file_put_contents($this->reportDirectory 
-                    . DIRECTORY_SEPARATOR . $this->reportFileName, 
-                        ob_get_contents());
-                ob_end_clean();
+                    . DIRECTORY_SEPARATOR . $this->reportFileName, $result);
                 $reportDir = new PhingFile($this->reportDirectory);
                 $logMessage = "Writing report to: " 
                     . $reportDir->getAbsolutePath() . DIRECTORY_SEPARATOR 
                         . $this->reportFileName;
                 $this->log($logMessage);
             } else {
-                $printer->printResult($result);
+                $result = $printer->printResult($result, $this->countTests);
+                $this->log("\n" . $result);
             }
         } elseif ($this->reportType === 'xml') {
             $printer = new PHPLOC_TextUI_ResultPrinter_XML();
