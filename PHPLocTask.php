@@ -135,7 +135,10 @@ class PHPLocTask extends Task
         if ($this->reportType === 'cli' || $this->reportType === 'txt') {
             $printer = new PHPLOC_TextUI_ResultPrinter_Text();
             if ($this->reportType === 'txt') {
-                $result = $printer->printResult($result, $this->countTests);
+                ob_start();
+                $printer->printResult($result, $this->countTests); 
+                $result = ob_get_contents(); 
+                ob_end_clean();
                 file_put_contents($this->reportDirectory 
                     . DIRECTORY_SEPARATOR . $this->reportFileName, $result);
                 $reportDir = new PhingFile($this->reportDirectory);
