@@ -134,11 +134,11 @@ class PHPLocTask extends Task
 
         if ($this->reportType === 'cli' || $this->reportType === 'txt') {
             $printer = new PHPLOC_TextUI_ResultPrinter_Text();
+            ob_start();
+            $printer->printResult($result, $this->countTests); 
+            $result = ob_get_contents(); 
+            ob_end_clean();
             if ($this->reportType === 'txt') {
-                ob_start();
-                $printer->printResult($result, $this->countTests); 
-                $result = ob_get_contents(); 
-                ob_end_clean();
                 file_put_contents($this->reportDirectory 
                     . DIRECTORY_SEPARATOR . $this->reportFileName, $result);
                 $reportDir = new PhingFile($this->reportDirectory);
@@ -147,7 +147,6 @@ class PHPLocTask extends Task
                         . $this->reportFileName;
                 $this->log($logMessage);
             } else {
-                $result = $printer->printResult($result, $this->countTests);
                 $this->log("\n" . $result);
             }
         } elseif ($this->reportType === 'xml') {
