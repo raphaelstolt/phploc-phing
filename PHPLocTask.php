@@ -1,10 +1,6 @@
 <?php
 require_once 'phing/Task.php';
 require_once 'phing/BuildException.php';
-require_once 'PHPLOC/Analyser.php';
-require_once 'PHPLOC/TextUI/ResultPrinter/Text.php';
-require_once 'PHPLOC/TextUI/ResultPrinter/XML.php';
-require_once 'PHPLOC/TextUI/ResultPrinter/CSV.php';
 
 class PHPLocTask extends Task
 {
@@ -57,6 +53,19 @@ class PHPLocTask extends Task
         $this->reportDirectory = trim($directory);
     }
     public function main() {
+        
+        /**
+         * Find PHPLoc
+         */
+        @include_once 'PHPLOC/Analyser.php';
+        
+        if (!class_exists('PHPLOC_Analyser')) {
+            throw new BuildException(
+                'PHPLocTask depends on PHPLoc being installed and on include_path.',
+                $this->getLocation()
+            );
+        }
+        
         $this->_validateProperties();
         if (!is_null($this->reportDirectory) && !is_dir($this->reportDirectory)) {
             $reportOutputDir = new PhingFile($this->reportDirectory);
@@ -134,6 +143,7 @@ class PHPLocTask extends Task
         $result = $this->getCountForFiles($files); 
 
         if ($this->reportType === 'cli' || $this->reportType === 'txt') {
+            require_once 'PHPLOC/TextUI/ResultPrinter/Text.php';
             $printer = new PHPLOC_TextUI_ResultPrinter_Text();
             ob_start();
             $printer->printResult($result, $this->countTests); 
@@ -152,6 +162,9 @@ class PHPLocTask extends Task
             }
         } elseif ($this->reportType === 'xml' || $this->reportType === 'csv') {
             $printerClass = sprintf('PHPLOC_TextUI_ResultPrinter_%s', strtoupper($this->reportType)) ;            
+            $printerClassFile = str_replace('_', DIRECTORY_SEPARATOR, $printerClass) . '.php';
+            require_once $printerClassFile;
+            
             $printer = new $printerClass();
             $reportDir = new PhingFile($this->reportDirectory);
             $logMessage = "Writing report to: " . $reportDir->getAbsolutePath()
