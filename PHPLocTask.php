@@ -186,7 +186,7 @@ class PHPLocTask extends Task
         return $files;
     }
     protected function getCountForFiles($files) {
-        $analyser = new PHPLoc_Analyser(); 
+        $analyser = new Analyser(); 
         return $analyser->countFiles($files, $this->countTests);
     }
 }
