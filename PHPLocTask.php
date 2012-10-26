@@ -59,7 +59,7 @@ class PHPLocTask extends Task
          */
         @include_once 'PHPLOC/Analyser.php';
         
-        if (!class_exists('PHPLOC_Analyser')) {
+        if (!class_exists('Analyser')) {
             throw new BuildException(
                 'PHPLocTask depends on PHPLoc being installed and on include_path.',
                 $this->getLocation()
