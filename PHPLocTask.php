@@ -56,7 +56,7 @@ class PHPLocTask extends Task
         /**
          * Find PHPLoc
          */
-        if (!@include_once('SebastianBergmann/PHPLOC/Analyser.php')) {
+        if (!@include_once('PHPLOC/Analyser.php')) {
             throw new BuildException(
                 'PHPLocTask depends on PHPLoc being installed '
                 . 'and on include_path.',
